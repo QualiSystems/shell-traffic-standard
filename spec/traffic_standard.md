@@ -137,7 +137,7 @@ Notes:
 - Custom attributes should be added only to the root level model.
 - All attributes are of type String unless mentioned otherwise
 
-##### [Vendor] Traffic Generator (virtual or physical)
+##### [Vendor] Traffic Generator (physical or virtual)
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
@@ -148,19 +148,13 @@ Server Description | String | No | The full description of the server. Usually i
 Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
 Supported Applications | String | Yes | Comma-separated list of traffic applications supported by this traffic generator. For example "IxLoad,IxNetwork".
 
-##### Generic Traffic Controller (physical)
+##### Generic Traffic Controller (physical or virtual)
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
 Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
 Client Install Path | String | Yes | The path in which the traffic client is installed on the Execution Server. For example "C:/Program Files (x86)/Ixia/IxLoad/5.10-GA".
 TCP Port | Numeric | Yes | The TCP port of the traffic server. Relevant only in case an external server is configured. Default TCP port should be used if kept empty.
-
-##### Generic Virtual Traffic Controller (virtual)
-
-Attribute Name | Data Type | User input? | Description
---- | --- | --- | ---
-Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
 
 #####  Generic Traffic Module
 
