@@ -40,7 +40,7 @@ The dependency to cloudshell-automation-api should be to the latest Patch versio
 ### Families & Models
 The traffic generator Shell standard supports both physical and virtual traffic generators and controllers and includes modelling for both a traffic application (controller) and a traffic generator device (chassis).
 
-The traffic generator is modeled per vendor; for example a traffic generator server will be modeled as "Ixia Traffic Generator" or "Spirent Traffic Generator". A specific traffic generator can be associated with multiple traffic controllers and vice versa; for example an "Ixia Traffic Generator" can be associated with multiple "IxNetwork" and "IxLoad" traffic controllers, and an "IxNetwork" traffic controller can be associated with multiple "Ixia Traffic Geneartor" traffic generator devices. The association between a traffic generator and a traffic controller is done via an attribute named "Controller Group", and multiple traffic controllers are part of the same controller group in case those controllers can be used to access the same traffic generator devices.
+The traffic generator is modeled per vendor; for example a traffic generator server will be modeled as "Ixia Traffic Generator" or "Spirent Traffic Generator". A specific traffic generator can be associated with multiple traffic controllers and vice versa; for example an "Ixia Traffic Generator" can be associated with multiple "IxNetwork" and "IxLoad" traffic controllers, and an "IxNetwork" traffic controller can be associated with multiple "Ixia Traffic Geneartor" traffic generator devices. The association between traffic generators and traffic controllers is done via an attribute named "Controller Group", and multiple traffic controllers are part of the same controller group in case those controllers can be used to access the same traffic generator devices. A traffic controller can be part of multiple controller groups and in this case the "Controller Group" attribute should hold a comma-separated list of groups ("group1,group2" for example).
 
 ### User flows and Shell configuration
 
@@ -145,14 +145,14 @@ Version | String | No | The firmware version of the resource.
 Model | String | No | The device model. This information is typically used for abstract resource filtering.
 Power Management | Boolean | Yes | Used by the power management orchestration, if enabled, to determine whether to automatically manage the device power status. Enabled by default.
 Server Description | String | No | The full description of the server. Usually includes the OS, exact firmware version and additional characteritics of the device.
-Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
+Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the group(s) (comma-separated) the traffic controller is part of.
 Supported Applications | String | Yes | Comma-separated list of traffic applications supported by this traffic generator. For example "IxLoad,IxNetwork".
 
 ##### Generic Traffic Controller (physical or virtual)
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
-Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
+Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the group(s) (comma-separated) the traffic controller is part of.
 Client Install Path | String | Yes | The path in which the traffic client is installed on the Execution Server. For example "C:/Program Files (x86)/Ixia/IxLoad/5.10-GA".
 TCP Port | Numeric | Yes | The TCP port of the traffic server. Relevant only in case an external server is configured. Default TCP port should be used if kept empty.
 
