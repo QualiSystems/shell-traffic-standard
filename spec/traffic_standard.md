@@ -86,7 +86,7 @@ Physical:
  - Family: Port Group, Model: Generic Port Group
    - Family: Port, Model: Generic Traffic Port
 
-- Family: Controller, Model: Ixia IxNetwork Traffic Controller
+- Family: Traffic Controller, Model: Ixia IxNetwork Traffic Controller
 
 Virtual:
 - Family: Generic App Family, Model: BreakingPoint Traffic Generator
