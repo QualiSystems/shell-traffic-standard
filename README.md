@@ -1,2 +1,2 @@
-# shell-traffic-standard
-CloudShell Shell standard definition for Traffic type devices/virtual appliances
+# quali-standards
+Repository for standards for use by CloudShell Shells.
