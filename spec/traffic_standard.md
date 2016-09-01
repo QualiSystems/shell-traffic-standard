@@ -146,6 +146,7 @@ Model | String | No | The device model. This information is typically used for a
 Power Management | Boolean | Yes | Used by the power management orchestration, if enabled, to determine whether to automatically manage the device power status. Enabled by default.
 Server Description | String | No | The full description of the server. Usually includes the OS, exact firmware version and additional characteritics of the device.
 Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the controller application is part of.
+Supported Applications | String | Yes | Comma-separated list of traffic applications supported by this traffic generator. For example "IxLoad,IxNetwork".
 
 ##### Generic Traffic Controller (physical)
 
