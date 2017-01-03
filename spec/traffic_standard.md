@@ -1,6 +1,6 @@
 # Traffic Shell Standard
 
-#### Version 1.0.0
+#### Version 2.0.0
 
 
 ## Introduction
@@ -12,12 +12,13 @@ The standard defines the Shell’s data model, commands and a set of guidelines 
 
 Version | Date | Notes
 --- | --- | ---
+2.0.0 | 2017-01-03 | 1) The controller shell is now a service. 2) Added load configuration command to the controller. 3) Added ARP command to the controller (when applicable, for up to layer 3). 4) Added start emulation command to the controller. 5) added start/stop traffic commands to the controller. 6) added get stats command to the controller. 7) The family name  of the chassis shell is changed to "Traffic Generator Chassis" and the model changed to "<Vendor> Chassis" like "Ixia Chassis". 8) The model name for virtual chassis is changed to "Virtual Ixia". 9) The model of the port was changed to "Generic Traffic Generator Port". 10) Added "Client Install Path" attribute also to the chassis. 11) The driver name changed to "<vendor> Chassis Driver". 12) Model attribute was removed from the port. 
 1.0.0 | 2016-09-01 | First release of the Traffic Shell Standard
 
 
 ## Definitions
 ### Granularity
-The Traffic Shell Standard defines two separate shells - a Shell for the Traffic Generator and a Shell for the Traffic Controller. The Traffic Generator Shell supports all traffic generator devices of the same Vendor, for example "Ixia Traffic Generator Shell". The Traffic Controller Shell supports traffic controller of a specific vendor and application, for example "Ixia IxLoad Traffic Controller Shell" or "Spirent Test Center Controller Shell".
+The Traffic Shell Standard defines two separate shells - a Shell for the Traffic Generator and a service Shell for the Traffic Controller. The Traffic Generator Shell supports all traffic generator devices of the same Vendor, for example "Ixia Traffic Generator Shell". The Traffic Controller service Shell supports traffic controller of a specific vendor and application, for example "Ixia IxLoad Traffic Controller Shell" or "Spirent Test Center Controller Shell".
 
 ### Specific Versions Certification
 Each released Shell should have a list of certified versions. Version certification can be done only by Quali’s engineering, and it includes validatation that all the Shell’s capabilities are working for a specific version.
@@ -49,7 +50,7 @@ The expected user flow is adding traffic ports to a blueprint (via the inventory
 The expected administrator flow is to load both the traffic generators and controllers into CloudShell using the shell template and Autoload command. The traffic client used by the Controller is expected to be installed on the Execution Server(s) as a pre-requisited for the controller shell and the path to its installation should be defined in the attribute "Client Install Path" on the Traffic Controller resource. In case there is an external server (such as Spirent Test Center Lab Server or IxNetwork API Server) the address of the Traffic Controller should point to this server and the server's TCP Port (if not default) should be defined in the "TCP Port" attribute of the Traffic Controller. Else the address of the Traffic Controller should be defined as "NA".
 
 #### Traffic Generator Data Model
-- Server
+- Traffic Generator Chassis
  - Module
     - Port
     - Port Group
@@ -76,9 +77,9 @@ The expected administrator flow is to load both the traffic generators and contr
 
 ##### Example:
 Physical:
-- Family: Server, Model: Ixia Traffic Generator
+- Family: Traffic Generator Chassis, Model: Ixia Chassis
  - Family: Module, Model: Generic Traffic Module
-    - Family: Port, Model: Generic Traffic Port
+    - Family: Port, Model: Generic Traffic Generator Port
     - Family: Port Group, Model: Generic Port Group
       - Family: Port, Model: Generic Traffic Port
  - Family: Power Port, Model: Generic Power Port
@@ -89,10 +90,10 @@ Physical:
 - Family: Traffic Controller, Model: Ixia IxNetwork Traffic Controller
 
 Virtual:
-- Family: Generic App Family, Model: BreakingPoint Traffic Generator
+- Family: Generic App Family, Model: Virtual BreakingPoint
  - Family: Module, Model: Generic Traffic Module
-    - Family: Port, Model: Generic Virtual Traffic Port
-  - Family: Port , Model: Generic Virtual Traffic Port
+    - Family: Port, Model: Generic Virtual Traffic Generator Port
+  - Family: Port , Model: Generic Virtual Traffic Generator Port
 
 - Family: Generic App Family, Model: BreakingPoint Traffic Controller
 
@@ -100,7 +101,7 @@ Virtual:
 
 Family | Rules
 --- | ---
-Server | Searchable
+Traffic Generator Chassis | Searchable
 Traffic Controller | Searchable
 Module | Searchable
 Port | Searchable, Connectable, Locked By Default
@@ -110,13 +111,13 @@ Port Group | Searchable, Acts As Group
 #### Resource Name and Address
 Family | Model | Resource Name | Resource Address
 --- | --- | --- | ---
-Server | [Vendor] Traffic Generator | (user defined) | (user defined - IP)
+Traffic Generator Chassis | [Vendor] Chassis | (user defined) | (user defined - IP)
 Traffic Controller | [Vendor/Application] Traffic Controller | (user defined) | (user defined - IP or "NA")
-Generic App Family | [Vendor] Traffic Generator | (user defined) | (user defined - IP)
+Generic App Family | [Vendor] Virtual Chassis | (user defined) | (user defined - IP)
 Generic App Family | [Vendor/Application] Traffic Controller | (user defined) | (user defined - IP)
 Module | Generic Traffic Module | Module[ID] | M[ID]
-Port | Generic Traffic Port | The name of the port as appears in the device. Any “/” character is replaced with “-“, spaces trimmed. | P[ID]
-Port | Generic Virtual Traffic Port | The name of the port as appears in the device. Any “/” character is replaced with “-“, spaces trimmed. | P[ID]
+Port | Generic Traffic Generator Port | The name of the port as appears in the device. Any “/” character is replaced with “-“, spaces trimmed. | P[ID]
+Port | Generic Virtual Traffic Generator Port | The name of the port as appears in the device. Any “/” character is replaced with “-“, spaces trimmed. | P[ID]
 Power Port | Generic Power Port | PP[ContainerID][ID] | PP[ContainerID][ID]
 Port Group | Generic Traffic Grouped Port | PG[ID] | PG[ID]
 
@@ -137,7 +138,7 @@ Notes:
 - Custom attributes should be added only to the root level model.
 - All attributes are of type String unless mentioned otherwise
 
-##### [Vendor] Traffic Generator (physical or virtual)
+##### [Vendor] Chassis (physical or virtual)
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
@@ -147,6 +148,7 @@ Power Management | Boolean | Yes | Used by the power management orchestration, i
 Server Description | String | No | The full description of the server. Usually includes the OS, exact firmware version and additional characteritics of the device.
 Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the group(s) (comma-separated) the traffic controller is part of.
 Supported Applications | String | Yes | Comma-separated list of traffic applications supported by this traffic generator. For example "IxLoad,IxNetwork".
+Client Install Path | String | Yes | The path in which the traffic client is installed on the Execution Server. For example "C:/Program Files (x86)/Ixia/IxLoad/5.10-GA".
 
 ##### Generic Traffic Controller (physical or virtual)
 
@@ -162,20 +164,18 @@ Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
 Model | String | No | The device model. This information is typically used for abstract resource filtering.
 
-##### Generic Traffic Port
+##### Generic Traffic Generator Port
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
-Model | String | No | The device model. This information is typically used for abstract resource filtering.
 Media Type | String | No | Interface media type. Possible values are Fiber and/or Copper (comma-separated).
 Supported Speed | String | No | Speed supported by the interface, comma-separated.
 Logical Name | String | Yes | The port's logical name in the test configuration. If kept emtpy automatic allocation will apply.
 
-##### Generic Virtual Traffic Port
+##### Generic Virtual Traffic Generator Port
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
-Model | String | No | The device model. This information is typically used for abstract resource filtering.
 Logical Name | String | Yes | The port's logical name in the test configuration. If kept emtpy automatic allocation will apply.
 Requested vNIC Name | String | Yes | The name or number of the network interface represented by this port. If kept empty an available inetrafce will be selected on connection creation.
 
@@ -219,39 +219,80 @@ Input | context | - | object | system parameter | object of type AutoLoadCommand
 Output | AutoLoadDetails | - | object | Yes | object of type AutoLoadDetails with the discovered resource structure and attributes. | - | -
 
 ### Traffic Controller Commands
-The Traffic Controller doesn't have commands associated with it as part of this traffic standard. It is possible to extend the Traffic Controller Shell (which consists only of data model) with custom commands such as load_configuration, run_test, stop_test, send_arp, preview_configuration, get_statistics or any other custom commands according to the use case.
+elow is a list of all the commands associated with the Traffic Controller root resource (Family = Traffic Controller).
 
-It is suggested to launch the commands associated with the Traffic Controller via orchestration scripts. The orchestration scripts will query the Sandbox, find the available traffic ports, decide on the right controller according to the information available on the ports and their root server, and launch the Traffic Controller's commands such as load test configuration and run traffic using the traffic ports available in the Sandbox.
-
-Note that the Shell's commands should be launched in Execution Servers that have the relevant traffic client (such as "IxLoad" or "Spirent Test Center") installed. The path to the traffic client can be found in the "Client Install Path" attribute on the Traffic Controller resource. In case a traffic server exists (relevant in Spirent Test Center Lab Server, Ixia IxNetwork API Server or Ixia IxN2X) than the address of the Traffic Controller will hold the address of the server and the attribute "TCP Port" on the Traffic Controller will hold the server's TCP port.
-
-Examples for common traffic controller commands:
 #### Load Configuration
 ```python
-def load_configuration(test_location)
+def load_configuration(config_file_location, self, context)
 ```
+###### Description
+Load the test configuration file.
+###### Display Name
+Load Configuration
+###### Parameters
+Input / Output | Parameter | Alias | Data Type | Required | Description
+--- | --- | --- | --- | --- | ---
+Input | config_file_location | Config File Location | string | Yes | The full path in which the configuration file exist. Should include the file name.
 
-#### Run Test
+#### Send ARP
 ```python
-def run_test()
+def send_arp(self, context)
 ```
+###### Description
+Send ARP to populate ARP tables.
+###### Display Name
+Send ARP
 
-#### Stop Test
+#### Start Emulation
 ```python
-def stop_test()
+def load_configuration(self, context)
 ```
+###### Description
+Start device/protocls emulations
+###### Display Name
+Start Emulation
 
-#### Preview Configuration
+#### Stop Emulation
 ```python
-def preview_configuration()
+def load_configuration(self, context)
 ```
+###### Description
+stop device/protocls emulations
+###### Display Name
+Stop Emulation
 
-#### Send Arp
+#### Start Traffic
 ```python
-def send_arp()
+def start_traffic(blocking, self, context)
 ```
+###### Description
+Start to run traffic
+###### Display Name
+Start Traffic
+###### Parameters
+Input / Output | Parameter | Alias | Data Type | Required | Description
+--- | --- | --- | --- | --- | ---
+Input | blocking | Blocking | Boolean | Yes | If set to true, the command will complete ONLY when the test/traffic based on the configuration file is completed and thus no other command can be executed during this time. The default value should be false - in this case the command will complete once the test/traffic is executed.
+
+#### Stop Traffic
+```python
+def stop_traffic(self, context)
+```
+###### Description
+Stop to run traffic
+###### Display Name
+Stop Traffic
 
 #### Get Statistics
 ```python
-def get_statistics()
+def get_statistics(view_name, output_type, self, context)
 ```
+###### Description
+Get the test/traffic statistics
+###### Display Name
+Get Statistics
+###### Parameters
+Input / Output | Parameter | Alias | Data Type | Required | Description
+--- | --- | --- | --- | --- | ---
+Input | view_name | View Name | string | Yes | The name of the view for which we want to get its statistics.
+Input | output_type | Output Type | string | Yes | The format of the file in which the statistics will be displayed. The options are: "CSV" or "JSON". Default value is "CSV".
