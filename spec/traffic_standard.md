@@ -45,9 +45,9 @@ The traffic generator is modeled per vendor; for example a traffic generator ser
 
 ### User flows and Shell configuration
 
-The expected user flow is adding traffic ports to a blueprint (via the inventory or abstract template) and reserving. An orchestration script can then query the sandbox, select the traffic controller to use out of the those defined in the controller group associated with the ports' root server, add that controller to the sandbox (as Shared) and launch commands such as load test configuration, run/stop test etc. using the Traffic Controller shell. All the information required for the controller's shell to work should be available in the controller and traffic generator attributes.
-
-The expected administrator flow is to load both the traffic generators and controllers into CloudShell using the shell template and Autoload command. The traffic client used by the Controller is expected to be installed on the Execution Server(s) as a pre-requisited for the controller shell and the path to its installation should be defined in the attribute "Client Install Path" on the Traffic Controller resource. In case there is an external server (such as Spirent Test Center Lab Server or IxNetwork API Server) the address of the Traffic Controller should point to this server and the server's TCP Port (if not default) should be defined in the "TCP Port" attribute of the Traffic Controller. Else the address of the Traffic Controller should be defined as "NA".
+The expected user flow is adding traffic ports to a blueprint (via the inventory or abstract template), adding the relevant service and reserving. Launch commands such as load test configuration, run/stop test etc. using the Traffic Controller shell.
+The expected administrator flow is to load both the traffic generators and controllers into CloudShell using the shell template and Autoload command. The traffic client used by the Controller is expected to be installed on the Execution Server(s) as a pre-requisited for the controller shell and the path to its installation should be defined in the attribute "Client Install Path" on the Traffic Controller and Traffic Generator Chassis resource. In case there is an external server (such as Spirent Test Center Lab Server or IxNetwork API Server) the address of the Traffic Controller should point to this server and the server's TCP Port (if not default) should be defined in the "TCP Port" attribute of the Traffic Controller. Else the address of the Traffic Controller should be defined as "NA".
+Only one controller servcie should be defined per application per serevr. For example, if for STC there is no lab server in use, only one controller service should be define. If there is a lab server, 2 scontrollers should be defined: one with the server and the other with out.
 
 #### Traffic Generator Data Model
 - Traffic Generator Chassis
@@ -146,7 +146,6 @@ Version | String | No | The firmware version of the resource.
 Model | String | No | The device model. This information is typically used for abstract resource filtering.
 Power Management | Boolean | Yes | Used by the power management orchestration, if enabled, to determine whether to automatically manage the device power status. Enabled by default.
 Server Description | String | No | The full description of the server. Usually includes the OS, exact firmware version and additional characteritics of the device.
-Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the group(s) (comma-separated) the traffic controller is part of.
 Supported Applications | String | Yes | Comma-separated list of traffic applications supported by this traffic generator. For example "IxLoad,IxNetwork".
 Client Install Path | String | Yes | The path in which the traffic client is installed on the Execution Server. For example "C:/Program Files (x86)/Ixia/IxLoad/5.10-GA".
 
@@ -154,9 +153,8 @@ Client Install Path | String | Yes | The path in which the traffic client is ins
 
 Attribute Name | Data Type | User input? | Description
 --- | --- | --- | ---
-Controller Group | String | Yes | The name of the controller group that the traffic generator is associated with or the group(s) (comma-separated) the traffic controller is part of.
 Client Install Path | String | Yes | The path in which the traffic client is installed on the Execution Server. For example "C:/Program Files (x86)/Ixia/IxLoad/5.10-GA".
-TCP Port | Numeric | Yes | The TCP port of the traffic server. Relevant only in case an external server is configured. Default TCP port should be used if kept empty.
+Server TCP Port | Numeric | Yes | The TCP port of the traffic server. Relevant only in case an external server is configured. Default TCP port should be used if kept empty.
 
 #####  Generic Traffic Module
 
